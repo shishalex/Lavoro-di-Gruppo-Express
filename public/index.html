@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Oroscopo Node 3D</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* Sfondo Gradient Animato */
+        body {
+            background: linear-gradient(135deg, #120422 0%, #000428 100%);
+            color: #e0e0e0;
+            min-height: 100vh;
+            font-family: 'Segoe UI', Roboto, sans-serif;
+        }
+
+        /* Effetto Vetro Tridimensionale per i Box */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 25px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), 
+                        inset 0 2px 2px rgba(255, 255, 255, 0.05);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .glass-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.8);
+            border: 1px solid rgba(138, 43, 226, 0.4);
+        }
+
+        /* Bottoni 3D stile "Push" */
+        .btn-push {
+            border: none;
+            border-radius: 15px;
+            padding: 12px 24px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.1s active;
+            position: relative;
+        }
+
+        .btn-push-primary {
+            background: linear-gradient(145deg, #8a2be2, #4b0082);
+            box-shadow: 0 6px 0 #310055, 0 12px 20px rgba(0,0,0,0.5);
+            color: white;
+        }
+
+        .btn-push-danger {
+            background: linear-gradient(145deg, #ff4b2b, #ff416c);
+            box-shadow: 0 6px 0 #901414, 0 12px 20px rgba(0,0,0,0.5);
+            color: white;
+        }
+
+        .btn-push:hover {
+            filter: brightness(1.2);
+            transform: translateY(-2px);
+        }
+
+        .btn-push:active {
+            transform: translateY(4px);
+            box-shadow: 0 2px 0 #310055;
+        }
+
+        /* Input stilizzati */
+        .form-control {
+            background: rgba(0, 0, 0, 0.4) !important;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: white !important;
+            border-radius: 12px;
+            padding: 12px;
+        }
+
+        .form-control:focus {
+            box-shadow: 0 0 15px rgba(138, 43, 226, 0.5);
+            border-color: #8a2be2;
+        }
+
+        .zodiac-icon {
+            font-size: 2rem;
+            background: linear-gradient(45deg, #00f2fe, #4facfe);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container py-5">
+    <div class="text-center mb-5">
+        <h1 class="display-4 fw-bold">🌌 Oracle Node</h1>
+        <p class="lead opacity-75">Inserisci i tuoi dati e scopri cosa dicono le stelle.</p>
+    </div>
+
+    <div class="row justify-content-center mb-5">
+        <div class="col-lg-8">
+            <div class="glass-card p-4 p-md-5">
+                <form action="/api/utenti" method="POST">
+                    <div class="row g-4">
+                        <div class="col-md-6">
+                            <label class="form-label small text-uppercase fw-bold opacity-50">Nome</label>
+                            <input type="text" name="nome" class="form-control" placeholder="Mario" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label small text-uppercase fw-bold opacity-50">Cognome</label>
+                            <input type="text" name="cognome" class="form-control" placeholder="Rossi" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label small text-uppercase fw-bold opacity-50">Email</label>
+                            <input type="email" name="email" class="form-control" placeholder="mario@esempio.it" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label small text-uppercase fw-bold opacity-50">Data di Nascita</label>
+                            <input type="date" name="dataNascita" class="form-control" required>
+                        </div>
+                        <div class="col-12 text-center mt-5">
+                            <button type="submit" class="btn-push btn-push-primary px-5">Calcola Destino</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <hr class="my-5 opacity-25">
+
+    <h2 class="text-center mb-4">Membri del Cosmo</h2>
+    <div id="listaUtenti" class="row">
+        </div>
+</div>
+
+<script>
+    // Mappa icone per i segni
+    const icone = {
+        "Ariete": "♈", "Toro": "♉", "Gemelli": "♊", "Cancro": "♋",
+        "Leone": "♌", "Vergine": "♍", "Bilancia": "♎", "Scorpione": "♏",
+        "Sagittario": "♐", "Capricorno": "♑", "Acquario": "♒", "Pesci": "♓"
+    };
+
+    async function caricaUtenti() {
+        const res = await fetch('/api/utenti');
+        const utenti = await res.json();
+        const container = document.getElementById('listaUtenti');
+        container.innerHTML = '';
+
+        utenti.forEach(u => {
+            container.innerHTML += `
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="glass-card p-4 h-100 d-flex flex-column justify-content-between">
+                        <div>
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <span class="zodiac-icon">${icone[u.segno] || '✨'}</span>
+                                <span class="badge rounded-pill bg-dark border border-secondary">${u.segno}</span>
+                            </div>
+                            <h4 class="mb-1">${u.nome} ${u.cognome}</h4>
+                            <p class="small text-info mb-3">${u.email}</p>
+                            <div class="p-3 rounded-4 mb-3" style="background: rgba(0,0,0,0.2)">
+                                <p class="fst-italic mb-0 small">"${u.oroscopo}"</p>
+                            </div>
+                        </div>
+                        <button onclick="eliminaUtente(${u.id})" class="btn-push btn-push-danger btn-sm w-100">
+                            Rimuovi Record
+                        </button>
+                    </div>
+                </div>
+            `;
+        });
+    }
+
+    async function eliminaUtente(id) {
+        if(confirm('Cancellare questo profilo?')) {
+            await fetch(`/api/utenti/${id}`, { method: 'DELETE' });
+            caricaUtenti();
+        }
+    }
+
+    caricaUtenti();
+</script>
+
+</body>
+</html>
