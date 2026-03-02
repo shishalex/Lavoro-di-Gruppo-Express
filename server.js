@@ -16,7 +16,22 @@ const frasiOroscopo = [
     "Un incontro inaspettato cambierà la tua prospettiva settimanale.",
     "Prenditi un momento per te stesso: il corpo ne ha bisogno.",
     "Le stelle suggeriscono prudenza nelle spese oggi.",
-    "L'energia creativa è al massimo, sfruttala per il lavoro!"
+    "L'energia creativa è al massimo, sfruttala per il lavoro!",
+    "Una sorpresa positiva arriverà nel pomeriggio.",
+    "La comunicazione sarà la chiave per risolvere un malinteso.",
+    "Segui l’istinto: oggi ti guiderà nella direzione giusta.",
+    "Un piccolo gesto gentile porterà grandi risultati.",
+    "Potresti ricevere una notizia che aspettavi da tempo.",
+    "La pazienza sarà la tua arma vincente in amore.",
+    "Nuove opportunità professionali si stanno avvicinando.",
+    "Evita discussioni inutili e mantieni la calma.",
+    "Le stelle favoriscono nuovi inizi e decisioni coraggiose.",
+    "Un vecchio amico potrebbe tornare a farsi sentire.",
+    "È il momento giusto per pianificare un viaggio.",
+    "La tua determinazione farà la differenza oggi.",
+    "Ascolta di più e parla di meno: scoprirai qualcosa di importante.",
+    "Una scelta fatta con il cuore si rivelerà vincente.",
+    "La fortuna premia chi osa con saggezza."
 ];
 
 // Funzione per determinare il segno zodiacale
