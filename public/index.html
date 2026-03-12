@@ -129,24 +129,31 @@
 
     <h2 class="text-center mb-4">Oroscopi Calcolati</h2>
     <div id="listaUtenti" class="row">
-        </div>
+    </div>
 </div>
 
 <script>
-    // Mappa icone per i segni
+    // Oggetto che associa il nome del segno al simbolo emoji corrispondente
     const icone = {
         "Ariete": "♈", "Toro": "♉", "Gemelli": "♊", "Cancro": "♋",
         "Leone": "♌", "Vergine": "♍", "Bilancia": "♎", "Scorpione": "♏",
         "Sagittario": "♐", "Capricorno": "♑", "Acquario": "♒", "Pesci": "♓"
     };
 
+    // Funzione asincrona per recuperare gli utenti dal server e mostrarli
     async function caricaUtenti() {
+        // Effettua una richiesta GET al server
         const res = await fetch('/api/utenti');
+        // Converte la risposta in formato JSON
         const utenti = await res.json();
+        // Seleziona il contenitore nel DOM
         const container = document.getElementById('listaUtenti');
+        // Svuota il contenitore prima di riempirlo
         container.innerHTML = '';
 
+        // Cicla su ogni utente ricevuto
         utenti.forEach(u => {
+            // Aggiunge il codice HTML per ogni scheda utente (usando i template literals)
             container.innerHTML += `
                 <div class="col-md-6 col-lg-4 mb-4">
                     <div class="glass-card p-4 h-100 d-flex flex-column justify-content-between">
@@ -170,13 +177,18 @@
         });
     }
 
+    // Funzione asincrona per eliminare un utente
     async function eliminaUtente(id) {
+        // Mostra una finestra di conferma prima di procedere
         if(confirm('Cancellare questo profilo?')) {
+            // Effettua una richiesta DELETE al server includendo l'ID nell'URL
             await fetch(`/api/utenti/${id}`, { method: 'DELETE' });
+            // Ricarica la lista aggiornata dopo l'eliminazione
             caricaUtenti();
         }
     }
 
+    // Esegue la funzione di caricamento iniziale all'apertura della pagina
     caricaUtenti();
 </script>
 
